@@ -9,7 +9,7 @@ let nombreIn;
 let cantidad;
 let stockrestar = 0;
 
-/* //Bucle for para login
+//Bucle for para login
 for (let i = 3; i >= 1; i--) {
     let usuarioIngresado = prompt("Ingrese su nombre de usuario");
     console.log(usuarioIngresado);//Un log para corroborar el usuario ingresado.
@@ -21,15 +21,15 @@ for (let i = 3; i >= 1; i--) {
     } else {
         alert("Usuario o Contraseña incorrecta");
     }
-} */
-/* 
-//Condicional para poder ejecutar 
+}
+
+//Condicional para poder ejecutar los botones
 if (!log) {
     alert("Debe Logearse correctamente para poder ejecutar los botones del HTML");
 }
- */
+
 //Constructor de producto
-class Productos {
+class Producto {
     constructor(nombre, precio, stock) {
         this.nombre = nombre;
         this.precio = precio;
@@ -37,109 +37,125 @@ class Productos {
     }
 }
 
-const producto1 = new Productos("Arroz", 2000, 10);
-const producto2 = new Productos("Fideos tirabuzon", 1500, 15);
-const producto3 = new Productos("Atun", 3000, 5);
-const producto4 = new Productos("Pan", 2000, 40);
-const producto5 = new Productos("Cafe", 8500, 20);
-const producto6 = new Productos("Cerveza", 2200, 12);
+const producto1 = new Producto("Arroz", 2000, 10);
+const producto2 = new Producto("Fideos", 1500, 15);
+const producto3 = new Producto("Atun", 3000, 5);
+const producto4 = new Producto("Pan", 2000, 40);
+const producto5 = new Producto("Cafe", 8500, 20);
+const producto6 = new Producto("Cerveza", 2200, 12);
 todosLosProductos.push(producto1, producto2, producto3, producto4, producto5, producto6);
 
-// boton para que el usuario ingrese un nuevo producto y lo sume a todos los productos
+// boton para que el usuario ingrese un nuevo producto
 function IngresoDeProductos() {
     if (log === true) {
-        let salida = true;
-        while (salida) {
-            let nombre = prompt("Ingrese el nombre del nuevo producto:");
-            let precio = parseInt(prompt("Ingrese el precio de " + nombre + " :"));
-            let stock = parseInt(prompt("Ingrese el stock del nuevo producto:"));
-            let continuar = prompt("¿Desea ingresar otro nuevo producto?  [ s | n ]").toLowerCase();
-            if (continuar != "s" && continuar != "n") {
-                continuar = prompt('Ingrese solo la letra S o letra N ').toLowerCase();
-            } else if (continuar == "n" || continuar != "s") {
-                salida = false;
-                // Crea una nueva instancia de Productos con los datos proporcionados por el usuario
-                const nuevoProducto = new Productos(nombre, precio, stock);
-                todosLosProductos.push(nuevoProducto);
-                console.table(todosLosProductos);
-                return todosLosProductos
-            }
-        }
-    }
-}
-console.table(todosLosProductos);
-//boton para que el usuario ingrese productos y cantidad al carrito
-function carritoCompras() {
-//    if (log === true) {
-        carritoDeProductos(nombreIn, cantidad)
-        console.table(carrito);
-        console.table(totalAPagar(carrito));
-        restarStock(todosLosProductos, carrito);
-        return
-    }
-//}
-
-function carritoDeProductos() {
-    let salida = true;
-    alert('A continuacion la lista de los productos disponibles:');
-    let losProductos = todosLosProductos.map((producto) => producto.nombre + '. $' + producto.precio);
-    alert(losProductos.join('\n'));
-    while (salida) {
-        nombreIn = prompt('Ingrese el nombre del producto:').toLowerCase();
-        let producto = todosLosProductos.find(item => item.nombre.toLowerCase() === nombreIn);//retorna true si hay algun nombre de producto igual
-        if (!producto) {
-            alert('Producto no encontrado.');
-            continue;
-        }
-        cantidad = parseInt(prompt('Ingrese la cantidad de ' + nombreIn + ' :'));
-        carrito.push({ "Nombre del producto": nombreIn, Unidades: cantidad, precio: producto.precio });
-        validarStock(carrito, todosLosProductos); //funcion que valida si hay stock suficiente
-        //condicion de salida
-        let continuar = prompt('¿Desea agregar otro producto al carrito?  [ s | n ]').toLowerCase();
-        if (continuar != "s" && continuar != "n") {
-            continuar = prompt('Ingrese solo la letra S o letra N ')
-        } else if (continuar == "n" || continuar != "s") {
-            salida = false
-        }
-    }
-    return carrito
-}
-
-function validarStock(carrito, todosLosProductos) {
-    carrito.forEach(producto => {
-        const nombreProducto = producto['Nombre del producto'];
-        const unidadesCompradas = producto["Unidades"];
-        todosLosProductos.forEach(producto => {
-            if (producto.nombre.toLowerCase() == nombreProducto.toLowerCase()) {
-                if (!(producto.stock >= unidadesCompradas)) {
-                    alert(`Lo lamento, solo tenemos ${producto.stock} unidades de ${producto.nombre} `)
-                    carrito.pop();
-                    return;
+        let continuarAgregando = true;
+        while (continuarAgregando) {
+            let nombre = prompt("Ingrese el nombre del nuevo producto:").toLowerCase();
+            if (existeProducto(nombre, todosLosProductos)) {
+                const producto = obtenerProducto(nombre);
+                alert(nombre + ' ya existe en la lista de productos y hay ' + producto.stock + ' en Stock');
+            } else {
+                let precio = parseInt(prompt("Ingrese el precio de " + nombre + " :"));
+                let stock = parseInt(prompt("Ingrese el stock del nuevo producto:"));
+                agregarProducto(nombre, precio, stock);
+                let continuar = prompt("¿Desea ingresar otro nuevo producto?  [ s | n ]").toLowerCase();
+                while (continuar != "s" && continuar != "n") {
+                    continuar = prompt('Ingrese solo la letra S o letra N ').toLowerCase();
+                }
+                if (continuar == "n") {
+                    continuarAgregando = false;
+                    console.table(todosLosProductos);
                 }
             }
-        })
-    })
+        }
+    }
 }
 
+//retorna si hay algun nombre de producto igual
+function existeProducto(nombre) {
+    return todosLosProductos.some(producto => producto.nombre.toLowerCase() === nombre);
+}
+//devuelve el primer producto encontrado
+function obtenerProducto(nombre) {
+    return todosLosProductos.find(producto => producto.nombre.toLowerCase() === nombre);
+}
+
+// Crea una nueva instancia de Productos con los datos proporcionados por el usuario
+function agregarProducto(nombre, precio, stock) {
+    const nuevoProducto = new Producto(nombre, precio, stock);
+    todosLosProductos.push(nuevoProducto);
+    return nuevoProducto;
+}
+console.table(todosLosProductos);
+
+//boton para que el usuario ingrese productos y cantidad al carrito
+function carritoCompras() {
+    if (log === true) {
+        agregarProductosAlCarrito()
+        console.log('Productos en el carrito:');
+        console.table(carrito.map(item => {
+            const container = {};
+            container.nombre = item.Producto.nombre;
+            container.unidades = item.Unidades;
+            return container;
+        }));
+        console.table(totalAPagar(carrito));
+        console.table(todosLosProductos);
+    }
+}
+
+function agregarProductosAlCarrito() {
+    let continuarAgregando = true;
+    mostrarProductos();
+    while (continuarAgregando) {
+        nombreIn = prompt('Ingrese el nombre del producto:').toLowerCase();
+        let producto = obtenerProducto(nombreIn);
+        if (producto) {
+            cantidad = parseInt(prompt('Ingrese la cantidad de ' + nombreIn + ' :'));
+            //funcion que valida si hay stock suficiente
+            if (validarStock(producto, cantidad)) {
+                agregarProductoAlCarrito(producto, cantidad);
+            } else {
+                alert('Stock insuficiente');
+            };
+            //condicion de salida
+            let continuar = prompt("¿Desea ingresar otro producto al carrito?  [ s | n ]").toLowerCase();
+            while (continuar != "s" && continuar != "n") {
+                continuar = prompt('Ingrese solo la letra S o letra N ').toLowerCase();
+            }
+            if (continuar == "n") {
+                continuarAgregando = false;
+            }
+        } else {
+            alert('Producto no encontrado.');
+        }
+    }
+}
+
+//funcion que retorna un nuevo array solo con dos propiedades para mostrarlo por alert los productos
+function mostrarProductos() {
+    alert('A continuacion la lista de los productos disponibles:');
+    let losProductos = todosLosProductos.map((producto) =>
+        producto.nombre + '. $' + producto.precio);
+    alert(losProductos.join('\n'));
+}
+
+//funcion que valida si hay stock suficiente
+function validarStock(producto, cantidad) {
+    return producto.stock >= cantidad;
+}
+
+//funcion que agrega productos al carrito y resta el stock de todosLosProductos
+function agregarProductoAlCarrito(producto, cantidad) {
+    carrito.push({ Producto: producto, Unidades: cantidad });
+    producto.stock -= cantidad;
+}
+
+//funcion que suma el valor de la cantidad de unidades por el precio de  cada item del carrito
 function totalAPagar(carrito) {
     aPagar = 0;
     carrito.forEach(item => {
-        aPagar += (item.Unidades * item.precio);
+        aPagar += (item.Unidades * item.Producto.precio);
     });
     return 'El total a pagar es: ' + '$' + aPagar
-}
-
-function restarStock(todosLosProductos, carrito) {
-    carrito.forEach(producto => {
-        const nombreProducto = producto['Nombre del producto'];
-        const unidadesCompradas = producto["Unidades"];
-        todosLosProductos.forEach(producto => {
-            if (producto.nombre.toLowerCase() == nombreProducto.toLowerCase()) {
-                if (producto.stock >= unidadesCompradas) {
-                    producto.stock -= unidadesCompradas;
-                }
-            }
-        })
-    })
-    console.table(todosLosProductos)
 }
