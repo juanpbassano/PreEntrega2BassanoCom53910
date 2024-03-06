@@ -1,39 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
 }
 
-.titulo {
+.pD {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    h1 {
-        margin: 1rem;
-        size: 10rem;
-        width: auto;
-        background-color: rgb(45, 239, 100);
-    }
-    div {
-        margin: 2rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        button {
-            font-size: .925rem;
-            color: blue;
-            background-color: antiquewhite;
-            width: fit-content;
-            height: 2rem;
-            border: 0.14rem solid rgb(0, 0, 0);
-            border-radius: 10px;
-        }
-    }
 }
+header{
+    margin: 1rem;
+    display: grid;
+    grid-template-rows:6rem ;
+    grid-template-columns:1fr 1fr ;
+
+    grid-template-areas: 
+        "tit form";
+}
+.inUsuario{
+    grid-area: usuario ;
+}
+.inPass{
+    grid-area: contraseña ;
+}
+.check{
+    grid-area: check ;
+}
+.btn-login{
+    grid-area: submit;
+}
+.form{
+    grid-area: form;
+    display: grid;
+    grid-template-rows:1fr 1fr ;
+    grid-template-columns:1fr 1fr ;
+    gap: .19rem;
+    grid-template-areas:
+        "usuario contraseña"
+        "check submit";
+}
+h1 {
+    grid-area: tit ;
+    margin: 1rem;
+    size: 10rem;
+    color: rgb(45, 239, 100);
+}
+.check{
+    grid-area: check;
+    align-items: end;
+    margin-right: .3rem;
+}
+div {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+.contIng{
+    border: 1px solid black;
+    border-radius: 5%;
+    padding: .8rem;
+    margin: 1rem;
+    background-color: rgba(140, 140, 140, 0.235);
+}
+.boton {
+    padding: 8px;
+    margin: .6rem;
+    font-size: .925rem;
+    background-color: #eaff6a;
+    width: 200px;
+    box-shadow: 5px 8px 10px -1px rgba(183, 15, 255, 0.406);
+    width: fit-content;
+    height: 2rem;
+    border: 1px solid black;
+    border-radius: 10px;
+    transition: transform 0.2s ease-in-out,background-color 0.2s ease-in-out;
+}
+.boton:hover{
+    background-color: #84ff0068;
+}
+
+
 
 .carrito {
     width: 1rem;
     height: 1rem;
+}
+
+.card {
+    background-color: #eaff6a;
+    width: 12.5rem;
+    border-radius: 1.25rem;
+    box-shadow: 0.3125rem 0.5rem 0.625rem 0.0625rem rgba(183, 15, 255, 0.552);
+}
+
+input,
+select {
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+select {
+    background-color: transparent;
+    font-size: 10px;
+    height: 24px;
+    width: 70px;
+}
+
+li {
+    list-style-type: none;
+}
+.btnComprar{
+    box-shadow: 3px 4px 2px -2px rgba(0, 0, 0, 0.44);
+    margin: 3px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.753);
+    color: white;
+}
+h2{
+    font-size: 2rem;
+    margin-top: 1rem;
+}
+.pD{
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: "ProductosDisponibles";
+    gap: 0.625rem;
+}
+label{
+    font-size: .8rem;
+}
+.cardCarrito{
+    margin: 1rem;
+    border:solid .0625rem black;
+    background-color: #3ceb4a;
+    width: 13.5rem;
+    border-radius: 1.25rem;
+    box-shadow: 0.3125rem 0.5rem 0.625rem 0.0625rem rgba(0, 0, 0, 0.552);
+
 }

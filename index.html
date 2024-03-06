@@ -2,27 +2,56 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <title>SegundaPreEntrega</title>
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>TerceraPreEntrega</title>
 </head>
 
 <body>
-    <div class="titulo">
-        <h1>Segunda pre-entrega, supermarket</h1>
-        <hr />
-        <div class="boton">
-            <button onclick="IngresoDeProductos()"> 
-                Ingresar nuevos productos
-            </button>
-        </div>
-        <div class="boton2">
-            <button onclick="carritoCompras()"> 
-                <img class="carrito" src="./img/verificar.png" alt="carrito"> Carrito de compras            
-            </button>
-        </div>
+    <div class="todo">
+        <header>
+            <h1>Tercera pre-entrega; MiniMarket</h1>
+            <form class="form" id="form-login">
+                <input class="inUsuario" type="text" placeholder="Usuario" id="user" name="user" />
+                <input class="inPass" type="password" placeholder="Contraseña" id="pass" name="pass" />
+                <div class="check">
+                    <label for="check">Recordar</label>
+                    <input type="checkbox" id="check" name="check" />
+                </div>
+                <input type="submit" class="btn-login" value="Ingresar" name="enviar" id="enviarLog" />
+            </form>
+        </header>
+        <main>
+            <hr />
+            <div class="nuevoProducto">
+                <h4>
+                    Completar los campos del producto nuevo para ingresar al stock
+                </h4>
+                <div class="contIng">
+                    <label for="nombreP">Nombre del producto</label>
+                    <input type="text" id="nombreP">
+                    <label for="precioP">Precio</label>
+                    <input type="text" id="precioP">
+                    <label for="stockP">Stock</label>
+                    <input type="text" id="stockP">
+                    <button class="boton" id="btn-ingNuevo">
+                        Ingresa el nuevo producto</button>
+                </div>
+            </div>
+            <hr />
+            <div>
+                <h2>Productos Disponibles:</h2>
+                <label for="ingreso">Buscar</label>
+                <input type="text" name="ingreso" id="ingreso" />
+                <div class="pD" id="ProductosDisponibles"></div>
+            </div>
+            <hr />
+            <div id="carrito">
+                <p id="total">Total a pagar:</p>
+            </div>
+        </main>
+        <footer></footer>
         <script src="js/main.js"></script>
     </div>
 </body>
