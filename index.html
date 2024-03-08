@@ -26,9 +26,9 @@
             <hr />
             <div class="nuevoProducto">
                 <h4>
-                    Completar los campos del producto nuevo para ingresar al stock
+                    Completar los campos del producto nuevo para ingresar al stock disponible
                 </h4>
-                <div class="contIng">
+                <div class="contIng" id="contIng">
                     <label for="nombreP">Nombre del producto</label>
                     <input type="text" id="nombreP">
                     <label for="precioP">Precio</label>
@@ -42,8 +42,13 @@
             <hr />
             <div>
                 <h2>Productos Disponibles:</h2>
-                <label for="ingreso">Buscar</label>
-                <input type="text" name="ingreso" id="ingreso" />
+                <div id="filtrar">
+                    <form action="" >
+                        <label for="ingreso">Filtrar Productos</label>
+                        <input type="text" name="ingreso" id="ingreso" />
+                        <button id="buscar">Buscar</button>
+                    </form>
+                </div>
                 <div class="pD" id="ProductosDisponibles"></div>
             </div>
             <hr />

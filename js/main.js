@@ -70,13 +70,13 @@ btnNuevoPro.addEventListener('click', () => {
     const nombreP = document.getElementById('nombreP'),
         precioP = document.getElementById('precioP'),
         stockP = document.getElementById('stockP');
-    IngresoDeProductos(nombreP.value, precioP.value, stockP.value);
+    IngresoDeProductos(nombreP.value.toLowerCase(), precioP.value, stockP.value);
 });
 //funcion que crea el producto nuevo
 function IngresoDeProductos(nombreP, precio, stock) {
     if (log === true) {
         if (!existeProducto(nombreP)) {
-            agregarProducto(nombreP.toLowerCase(), precio, stock);
+            agregarProducto(nombreP, precio, stock);
         } else {
             const producto = obtenerProducto(nombreP);
             continuar = prompt(nombreP + ' ya existe en la lista de productos y hay ' + producto.stock +
@@ -102,7 +102,7 @@ function obtenerProducto(nombre) {
 // Crea una nueva instancia de Productos con los datos proporcionados por el usuario
 //y se agrega al array de todos los productos.
 function agregarProducto(nombreP, precio, stock) {
-    const nuevoProducto = new Producto(nombreP, parseInt(precio), parseInt(stock));
+    const nuevoProducto = new Producto(nombreP.toLowerCase(), parseInt(precio), parseInt(stock));
     todosLosProductos.push(nuevoProducto);
     creaProductoNuAlHTML(nuevoProducto);
     return nuevoProducto;
@@ -122,8 +122,8 @@ function modificarStockYHtml(producto, stock, nombreP) {
         stockDispo = document.getElementById(`${nombreP}-stockDispo`);
     stockDispo.innerText = `Stock disponible: ${producto.stock}`;
     canti.innerHTML = generarOpciones(producto.stock);
-
 }
+
 //Funcion que genera el bloque de html con los datos e ids especificos
 function bloqueHtml(Producto) {
     return `<div class="card">
@@ -139,14 +139,15 @@ function bloqueHtml(Producto) {
                 </div>
             </div>`;
 }
-//inserta etiquetas listas al html con los productos
+//funcion que inserta al html, el nuevo rpoducto ingresado por los inputs
 function creaProductoNuAlHTML(nuevoProducto) {
-    console.log(nuevoProducto);
     const contenedor = document.getElementById('ProductosDisponibles');
     const nuevosPro = document.createElement('li');
     nuevosPro.innerHTML = bloqueHtml(nuevoProducto)
     contenedor.append(nuevosPro);
 }
+
+//inserta etiquetas listas al html con los productos
 function crearProductosAlHTML() {
     const contenedor = document.getElementById('ProductosDisponibles');
     todosLosProductos.forEach(Producto => {
@@ -157,6 +158,26 @@ function crearProductosAlHTML() {
     })
     return
 }
+
+
+//CONTINUAR para que imprima el search
+function filtrarProductos(){
+    const conte=document.getElementById('filtrar'),
+    input = document.getElementById('ingreso'),
+    buscar = document.getElementById('buscar'),
+    liEncontrado = document.createElement('li');
+    input.addEventListener('submit', (e) =>{
+        e.preventDefault();
+        console.log(encontrado);
+        let encontrado=obtenerProducto(input.value);
+        liEncontrado.innerHTML = bloqueHtml(encontrado);
+        conte.append(liEncontrado);
+    });
+};
+
+filtrarProductos();
+
+
 //-----------------------------------------------------------------------------------
 //comprar productos
 //-----------------------------------------------------------------------------------
@@ -164,12 +185,28 @@ function crearProductosAlHTML() {
 function escucharAgregar(Producto) {//duda porque no agrega al carrito los productos creados
     const btnComprar = document.getElementById(`btnComprar-${Producto.nombre.toLowerCase()}`),
         slcStock = document.getElementById(`${Producto.nombre}-cantidad`);
-    btnComprar.addEventListener('click', () => {
-        let nombreDelProducto = Producto.nombre,
-            cantidad = slcStock.value;
-        agregarAlCarrito(nombreDelProducto, cantidad, Producto.precio);
-    });
+        btnComprar.addEventListener('click', () => {
+            let nombreDelProducto = Producto.nombre,
+                cantidad = slcStock.value;
+            agregarAlCarrito(nombreDelProducto, cantidad, Producto.precio);
+        });
+    /* 
+    respuesta de cheat gpt
+        const contenedorProductos = document.getElementById('ProductosDisponibles');
+        contenedorProductos.addEventListener('click', (event) => {
+            const target = event.target;
+            console.log(target);
+            if (target.classList.contains('btnComprar')) {
+                const nombreProducto = target.id.split('-')[1];
+                const cantidadSeleccionada = document.getElementById(`${nombreProducto}-cantidad`).value;
+                const producto = todosLosProductos.find(prod => prod.nombre.toLowerCase() === nombreProducto);
+                if (producto) {
+                    agregarAlCarrito(producto.nombre, cantidadSeleccionada, producto.precio);
+                }
+            }
+        }); */
 }
+
 //funcion que agrega productos al carrito y resta el stock de todosLosProductos
 function agregarAlCarrito(producto, cantidad, precio) {
     prod = carrito.find(item => item.Producto.toLowerCase() === producto.toLowerCase());
@@ -207,6 +244,7 @@ function totalAPagar(carrito) {
 crearProductosAlHTML();
 
 function crearCarritoHtml(Producto) {
+    //borrarProductoDeCarrito(Producto);
     return `<div id="${Producto.Producto}-cardCarrito" class="cardCarrito">
     <h3>${Producto.Producto.charAt(0).toUpperCase() + Producto.Producto.slice(1)}</h3>
     <p>Precio unitario: $${Producto.Precio}</p>
@@ -216,13 +254,17 @@ function crearCarritoHtml(Producto) {
     </div>
 </div>`;
 }
+
 /////EERROR AL BORRAR HTML
-function borrarProductoDeCarrito(producto) {
-    const proAgregado=document.getElementById(`${producto.Producto}-cardCarrito`),
-    btnBorrar=document.getElementById(`btnBorrar-${producto.Producto}`),
-    liDeProducto=document.getElementById(`${producto.Producto}-li`);
-    console.log(proAgregado,btnBorrar,liDeProducto);
-    /* btnBorrar.addEventListener('click', () => {
+/* function borrarProductoDeCarrito(producto) {
+    const proAgregado = document.getElementById(`${producto.Producto}-cardCarrito`),
+        btnBorrar = document.getElementById(`btnBorrar-${producto.Producto}`),
+        liDeProducto = document.getElementById(`${producto.Producto}-li`);
+    console.log(proAgregado, btnBorrar, liDeProducto);
+    btnBorrar.addEventListener('click', () => {
         console.log('borrar');
-    }); */
-}  
+        liDeProducto.remove();
+    });
+}
+ */
+
