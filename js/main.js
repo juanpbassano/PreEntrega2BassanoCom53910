@@ -85,7 +85,8 @@ function IngresoDeProductos(nombreP, precio, stock) {
                 continuar = prompt('Ingrese solo la letra S o letra N ').toLowerCase();
             }
             if (continuar == "s") {
-                modificarStockYHtml(producto, stock, nombreP)
+                producto.stock += parseInt(stock);
+                modificarStockYHtml(producto, producto.stock, nombreP)
             }
         }
     }
@@ -116,7 +117,6 @@ function generarOpciones(stock) {
 }
 //funcion que modifica el stock si se ingresa nuevamente el mismo producto y modifica el html actualizado
 function modificarStockYHtml(producto, stock, nombreP) {
-    producto.stock += parseInt(stock);
     const canti = document.getElementById(`${nombreP}-cantidad`),
         stockDispo = document.getElementById(`${nombreP}-stockDispo`);
     stockDispo.innerText = `Stock disponible: ${producto.stock}`;
@@ -184,9 +184,10 @@ function escucharAgregar(Producto) {//duda porque no agrega al carrito los produ
     const btnComprar = document.getElementById(`btnComprar-${Producto.nombre.toLowerCase()}`),
         slcStock = document.getElementById(`${Producto.nombre}-cantidad`);
     btnComprar.addEventListener('click', () => {
-        let nombreDelProducto = Producto.nombre,
-            cantidad = slcStock.value;
-        agregarAlCarrito(nombreDelProducto, cantidad, Producto.precio);
+        //let nombreDelProducto = Producto.nombre,
+        cantidad = slcStock.value;
+        agregarAlCarrito(Producto, cantidad, Producto.precio);
+        console.log(carrito);
     });
     /* 
     respuesta de AI
@@ -206,39 +207,49 @@ function escucharAgregar(Producto) {//duda porque no agrega al carrito los produ
 }
 
 //funcion que agrega productos al carrito y resta el stock de todosLosProductos
-function agregarAlCarrito(producto, cantidad, precio) {
-    prod = carrito.find(item => item.Producto.toLowerCase() === producto.toLowerCase());
-    if (!prod) {
-        carrito.push({ Producto: producto, Precio: precio, Unidades: parseInt(cantidad) });
-        imprimeCarrito(carrito);
-        restarStock(todosLosProductos, carrito);
-        console.log(todosLosProductos);
-    } else {
-        prod.Unidades += parseInt(cantidad);
-        const contUnidades = document.getElementById(`${prod.Producto}-unidades`);
-        let nuevasUnidades = innerHTML = `<p>Unidades seleccionadas: ${prod.Unidades}</p>`;
-        contUnidades.innerHTML = nuevasUnidades;
+function agregarAlCarrito(Producto, cantidad, precio) {
+    if (validarStock(Producto)) {
+        prod = carrito.find(item => item.Producto.toLowerCase() === Producto.nombre.toLowerCase());
+        if (!prod) {
+            carrito.push({ Producto: Producto.nombre, Precio: precio, Unidades: parseInt(cantidad) });
+            imprimeCarrito(carrito);
+            restarStock(todosLosProductos, carrito, cantidad);
+            console.log(todosLosProductos);
+        } else if(validarStock(Producto)){
+            prod.Unidades += parseInt(cantidad);
+            restarStock(todosLosProductos, carrito, cantidad);
+            modificarStockYHtml(Producto, Producto.stock, Producto.nombre);
+            const contUnidades = document.getElementById(`${prod.Producto}-unidades`);
+            let nuevasUnidades = innerHTML = `<p>Unidades seleccionadas: ${prod.Unidades}</p>`;
+            contUnidades.innerHTML = nuevasUnidades;
+        }
+        totalAPagar(carrito);
+        return carrito
     }
-    totalAPagar(carrito);
-    return carrito
 }
 
-function restarStock(todosLosProductos, carrito,) {
+function validarStock(producto) {
+    if (producto.stock <= 0) {
+        alert(`Lo lamento, no tenemos mas unidades de ${producto.nombre} `);
+        return false;
+    } else {
+        return true;
+    }
+}
+
+
+function restarStock(todosLosProductos, carrito, cantidad) {
     carrito.forEach(producto => {
         const nombreProducto = producto.Producto;
-        const unidadesCompradas = producto["Unidades"];
-        console.log(nombreProducto);
-        console.log(unidadesCompradas);
-        console.log(carrito);
+        //const unidadesCompradas = producto["Unidades"];
         todosLosProductos.forEach(producto => {
             if (producto.nombre == nombreProducto) {
-                if (producto.stock >= unidadesCompradas) {
-                    producto.stock -= unidadesCompradas;
-                    console.log(producto.stock);
+                console.log(cantidad);
+                if (producto.stock >= parseInt(cantidad)) {
+                    producto.stock -= parseInt(cantidad);
+                    console.log('quedan'+producto.stock);
                     const canti = document.getElementById(`${producto.nombre}-cantidad`),
                         stockDispo = document.getElementById(`${producto.nombre}-stockDispo`);
-                        console.log(stockDispo);
-                        console.log(canti);
                     stockDispo.innerText = `Stock disponible: ${producto.stock}`;
                     canti.innerHTML = generarOpciones(producto.stock);
                 }
