@@ -88,8 +88,7 @@ function IngresoDeProductos(nombreP, precio, stock) {
                 modificarStockYHtml(producto, stock, nombreP)
             }
         }
-    } console.log(existeProducto(nombreP));
-    console.log(todosLosProductos);
+    }
 }
 //retorna si hay algun nombre de producto igual al nombre del prompt
 function existeProducto(nombre) {
@@ -159,17 +158,16 @@ function crearProductosAlHTML() {
     return
 }
 
-
 //CONTINUAR para que imprima el search
-function filtrarProductos(){
-    const conte=document.getElementById('filtrar'),
-    input = document.getElementById('ingreso'),
-    buscar = document.getElementById('buscar'),
-    liEncontrado = document.createElement('li');
-    input.addEventListener('submit', (e) =>{
+function filtrarProductos() {
+    const conte = document.getElementById('filtrar'),
+        input = document.getElementById('ingreso'),
+        buscar = document.getElementById('buscar'),
+        liEncontrado = document.createElement('li');
+    input.addEventListener('submit', (e) => {
         e.preventDefault();
         console.log(encontrado);
-        let encontrado=obtenerProducto(input.value);
+        let encontrado = obtenerProducto(input.value);
         liEncontrado.innerHTML = bloqueHtml(encontrado);
         conte.append(liEncontrado);
     });
@@ -185,13 +183,13 @@ filtrarProductos();
 function escucharAgregar(Producto) {//duda porque no agrega al carrito los productos creados
     const btnComprar = document.getElementById(`btnComprar-${Producto.nombre.toLowerCase()}`),
         slcStock = document.getElementById(`${Producto.nombre}-cantidad`);
-        btnComprar.addEventListener('click', () => {
-            let nombreDelProducto = Producto.nombre,
-                cantidad = slcStock.value;
-            agregarAlCarrito(nombreDelProducto, cantidad, Producto.precio);
-        });
+    btnComprar.addEventListener('click', () => {
+        let nombreDelProducto = Producto.nombre,
+            cantidad = slcStock.value;
+        agregarAlCarrito(nombreDelProducto, cantidad, Producto.precio);
+    });
     /* 
-    respuesta de cheat gpt
+    respuesta de AI
         const contenedorProductos = document.getElementById('ProductosDisponibles');
         contenedorProductos.addEventListener('click', (event) => {
             const target = event.target;
@@ -212,18 +210,42 @@ function agregarAlCarrito(producto, cantidad, precio) {
     prod = carrito.find(item => item.Producto.toLowerCase() === producto.toLowerCase());
     if (!prod) {
         carrito.push({ Producto: producto, Precio: precio, Unidades: parseInt(cantidad) });
-        imprimeCarrito(carrito)
+        imprimeCarrito(carrito);
+        restarStock(todosLosProductos, carrito);
+        console.log(todosLosProductos);
     } else {
         prod.Unidades += parseInt(cantidad);
         const contUnidades = document.getElementById(`${prod.Producto}-unidades`);
         let nuevasUnidades = innerHTML = `<p>Unidades seleccionadas: ${prod.Unidades}</p>`;
         contUnidades.innerHTML = nuevasUnidades;
     }
-
     totalAPagar(carrito);
     return carrito
 }
 
+function restarStock(todosLosProductos, carrito,) {
+    carrito.forEach(producto => {
+        const nombreProducto = producto.Producto;
+        const unidadesCompradas = producto["Unidades"];
+        console.log(nombreProducto);
+        console.log(unidadesCompradas);
+        console.log(carrito);
+        todosLosProductos.forEach(producto => {
+            if (producto.nombre == nombreProducto) {
+                if (producto.stock >= unidadesCompradas) {
+                    producto.stock -= unidadesCompradas;
+                    console.log(producto.stock);
+                    const canti = document.getElementById(`${producto.nombre}-cantidad`),
+                        stockDispo = document.getElementById(`${producto.nombre}-stockDispo`);
+                        console.log(stockDispo);
+                        console.log(canti);
+                    stockDispo.innerText = `Stock disponible: ${producto.stock}`;
+                    canti.innerHTML = generarOpciones(producto.stock);
+                }
+            }
+        })
+    })
+}
 
 function imprimeCarrito() {
     let ultimo = carrito[carrito.length - 1];
@@ -256,7 +278,7 @@ function crearCarritoHtml(Producto) {
 }
 
 /////EERROR AL BORRAR HTML
-/* function borrarProductoDeCarrito(producto) {
+function borrarProductoDeCarrito() {
     const proAgregado = document.getElementById(`${producto.Producto}-cardCarrito`),
         btnBorrar = document.getElementById(`btnBorrar-${producto.Producto}`),
         liDeProducto = document.getElementById(`${producto.Producto}-li`);
@@ -266,5 +288,5 @@ function crearCarritoHtml(Producto) {
         liDeProducto.remove();
     });
 }
- */
+
 
