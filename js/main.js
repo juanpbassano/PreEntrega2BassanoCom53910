@@ -12,7 +12,9 @@ let cantidad;
 let stockrestar = 0;
 let prod;
 
-
+/* porque no permitís que un usuario se loguee, 
+se guarden sus datos y luego usas esos datos para hacer el login? 
+Lo harías todo en una funciona "login" con un par de líneas. */
 //FUNCION PARA LOGIN
 /* function login(inusuario, inPass) {
     if (usuario === inusuario && pass === inPass) {//verificacion de usuario y pass
@@ -144,6 +146,7 @@ function creaProductoNuAlHTML(nuevoProducto) {
     const nuevosPro = document.createElement('li');
     nuevosPro.innerHTML = bloqueHtml(nuevoProducto)
     contenedor.append(nuevosPro);
+    escucharAgregar(nuevoProducto);
 }
 
 //inserta etiquetas listas al html con los productos
@@ -157,53 +160,38 @@ function crearProductosAlHTML() {
     })
     return
 }
-
-//CONTINUAR para que imprima el search
-function filtrarProductos() {
-    const conte = document.getElementById('filtrar'),
-        input = document.getElementById('ingreso'),
-        buscar = document.getElementById('buscar'),
-        liEncontrado = document.createElement('li');
-    input.addEventListener('submit', (e) => {
-        e.preventDefault();
-        console.log(encontrado);
-        let encontrado = obtenerProducto(input.value);
-        liEncontrado.innerHTML = bloqueHtml(encontrado);
-        conte.append(liEncontrado);
+//filtrar producto
+function buscarProductos(arr, filtro) {
+    const encontrado = arr.find((el) => {
+        return el.nombre.includes(filtro);
     });
-};
-
-filtrarProductos();
-
+    return encontrado;
+}
+const input = document.getElementById('ingreso');
+const btnBuscar = document.getElementById('buscar');
+const contenedor = document.getElementById('filtrar');
+btnBuscar.addEventListener('click', (e) => {
+    e.preventDefault();
+    const encontrado = buscarProductos(todosLosProductos, input.value.toLowerCase());
+    console.log(encontrado);
+    const liEncontrado = document.createElement('li');
+    liEncontrado.innerHTML = bloqueHtml(encontrado);
+    contenedor.append(liEncontrado);
+    escucharAgregar(encontrado);
+})
 
 //-----------------------------------------------------------------------------------
 //comprar productos
 //-----------------------------------------------------------------------------------
 
-function escucharAgregar(Producto) {//duda porque no agrega al carrito los productos creados
+function escucharAgregar(Producto) {
     const btnComprar = document.getElementById(`btnComprar-${Producto.nombre.toLowerCase()}`),
         slcStock = document.getElementById(`${Producto.nombre}-cantidad`);
-    btnComprar.addEventListener('click', () => {
-        //let nombreDelProducto = Producto.nombre,
+    btnComprar.addEventListener('click', (e) => {
+        e.preventDefault()
         cantidad = slcStock.value;
         agregarAlCarrito(Producto, cantidad, Producto.precio);
-        console.log(carrito);
     });
-    /* 
-    respuesta de AI
-        const contenedorProductos = document.getElementById('ProductosDisponibles');
-        contenedorProductos.addEventListener('click', (event) => {
-            const target = event.target;
-            console.log(target);
-            if (target.classList.contains('btnComprar')) {
-                const nombreProducto = target.id.split('-')[1];
-                const cantidadSeleccionada = document.getElementById(`${nombreProducto}-cantidad`).value;
-                const producto = todosLosProductos.find(prod => prod.nombre.toLowerCase() === nombreProducto);
-                if (producto) {
-                    agregarAlCarrito(producto.nombre, cantidadSeleccionada, producto.precio);
-                }
-            }
-        }); */
 }
 
 //funcion que agrega productos al carrito y resta el stock de todosLosProductos
@@ -214,8 +202,7 @@ function agregarAlCarrito(Producto, cantidad, precio) {
             carrito.push({ Producto: Producto.nombre, Precio: precio, Unidades: parseInt(cantidad) });
             imprimeCarrito(carrito);
             restarStock(todosLosProductos, carrito, cantidad);
-            console.log(todosLosProductos);
-        } else if(validarStock(Producto)){
+        } else if (validarStock(Producto)) {
             prod.Unidades += parseInt(cantidad);
             restarStock(todosLosProductos, carrito, cantidad);
             modificarStockYHtml(Producto, Producto.stock, Producto.nombre);
@@ -241,13 +228,10 @@ function validarStock(producto) {
 function restarStock(todosLosProductos, carrito, cantidad) {
     carrito.forEach(producto => {
         const nombreProducto = producto.Producto;
-        //const unidadesCompradas = producto["Unidades"];
         todosLosProductos.forEach(producto => {
             if (producto.nombre == nombreProducto) {
-                console.log(cantidad);
                 if (producto.stock >= parseInt(cantidad)) {
                     producto.stock -= parseInt(cantidad);
-                    console.log('quedan'+producto.stock);
                     const canti = document.getElementById(`${producto.nombre}-cantidad`),
                         stockDispo = document.getElementById(`${producto.nombre}-stockDispo`);
                     stockDispo.innerText = `Stock disponible: ${producto.stock}`;
@@ -265,6 +249,7 @@ function imprimeCarrito() {
     listaCreada.classList.add(`${ultimo.Producto}-li`)
     listaCreada.innerHTML = crearCarritoHtml(ultimo)
     contCarrito.append(listaCreada)
+    eliminarProducto(ultimo)
 }
 //funcion que suma el valor de la cantidad de unidades por el precio de  cada item del carrito
 function totalAPagar(carrito) {
@@ -277,7 +262,6 @@ function totalAPagar(carrito) {
 crearProductosAlHTML();
 
 function crearCarritoHtml(Producto) {
-    //borrarProductoDeCarrito(Producto);
     return `<div id="${Producto.Producto}-cardCarrito" class="cardCarrito">
     <h3>${Producto.Producto.charAt(0).toUpperCase() + Producto.Producto.slice(1)}</h3>
     <p>Precio unitario: $${Producto.Precio}</p>
@@ -288,16 +272,20 @@ function crearCarritoHtml(Producto) {
 </div>`;
 }
 
-/////EERROR AL BORRAR HTML
-function borrarProductoDeCarrito() {
-    const proAgregado = document.getElementById(`${producto.Producto}-cardCarrito`),
-        btnBorrar = document.getElementById(`btnBorrar-${producto.Producto}`),
-        liDeProducto = document.getElementById(`${producto.Producto}-li`);
-    console.log(proAgregado, btnBorrar, liDeProducto);
+//funcion que borra elementos del carrito y del html
+function eliminarProducto(Producto) {
+    const btnBorrar = document.getElementById(`btnBorrar-${Producto.Producto.toLowerCase()}`);
     btnBorrar.addEventListener('click', () => {
-        console.log('borrar');
-        liDeProducto.remove();
+        const cardCarrito = document.querySelector(`.${Producto.Producto}-li`);
+        cardCarrito.remove();
+        let eliminado = obtenerProducto(Producto.Producto);
+        eliminado.stock += Producto.Unidades;
+        carrito.pop(eliminado);
+        modificarStockYHtml(eliminado, eliminado.stock, Producto.Producto);
+        aPagar -= (Producto.Unidades * Producto.Precio);
+        const parrafo = document.getElementById('total');
+        parrafo.innerText = `Total a pagar: ${aPagar}`;
     });
 }
 
-
+///proceso de compra y finalizar para pagar

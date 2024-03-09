@@ -90,9 +90,10 @@ div {
 .boton:hover {
     background-color: #84ff0068;
 }
-
-
-
+.contFiltrado{
+    padding: 2rem;
+    border: 1px solid black;
+}
 .card {
     background-color: #eaff6a;
     width: 12.5rem;
