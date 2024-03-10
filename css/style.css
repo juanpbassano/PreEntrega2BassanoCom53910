@@ -10,7 +10,10 @@
 
 
 header {
-    margin: 1rem;
+    width: 100%;
+
+    padding: 1rem;
+    background-color:rgba(140, 140, 140, 0.235);
     display: grid;
     grid-template-rows: 6rem;
     grid-template-columns: 1fr 1fr;
@@ -45,11 +48,55 @@ header {
         "check submit";
 }
 
+#register {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(140, 140, 140, 0.235);
+}
+
+.inputR {
+    padding: 10px 10px;
+    width: 15rem;
+    color: #666;
+    border-radius: 1px;
+    border: 1px solid #ccc;
+}
+
+.lgbtn[type="submit"] {
+    width: 15rem;
+    background-color: rgb(34, 139, 34);
+    padding: 8px 13px;
+    margin: 10px 0px;
+    color: white;
+    border-radius: 3px;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.lgbtn[type="reset"] {
+    width: 15rem;
+    float: right;
+    background-color: #FFA420;
+    padding: 8px 13px;
+    margin: 10px 0px;
+    color: white;
+    border-radius: 3px;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+button[type="reset"]:hover {
+    background-color: #ff1814;
+}
+
 h1 {
     grid-area: tit;
     margin: 1rem;
     size: 10rem;
-    color: rgb(45, 239, 100);
+    color: rgb(13, 44, 22);
 }
 
 .check {
@@ -90,10 +137,19 @@ div {
 .boton:hover {
     background-color: #84ff0068;
 }
-.contFiltrado{
+
+.contFiltrado {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     padding: 2rem;
     border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: 0.3125rem 0.5rem 0.625rem 0.0625rem #666;
+    background-color: rgba(140, 140, 140, 0.235);
 }
+
 .card {
     background-color: #eaff6a;
     width: 12.5rem;
@@ -119,7 +175,8 @@ li {
     margin: 1rem;
 }
 
-.btnComprar {
+.btnComprar,
+.btnFiltrado {
     box-shadow: 3px 4px 2px -2px rgba(0, 0, 0, 0.44);
     margin: 3px;
     border-radius: 5px;
@@ -138,12 +195,15 @@ h2 {
     flex-wrap: wrap;
     margin: 1rem;
 }
-#carrito{
+
+.carrito,
+.fCompra {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
     margin: 1rem;
 }
+
 label {
     font-size: .8rem;
 }
@@ -155,4 +215,36 @@ label {
     width: 13.5rem;
     border-radius: 1.25rem;
     box-shadow: 0.3125rem 0.5rem 0.625rem 0.0625rem rgba(0, 0, 0, 0.552);
+}
+
+
+.btnFl {
+    font-size: 1rem;
+    width: 10rem;
+    margin: .4rem;
+    background-color: #8d8c8c76;
+    border-radius: .425rem;
+    box-shadow: 0.3125rem 0.5rem 0.625rem 0.0625rem rgba(0, 0, 0, 0.552);
+}
+
+.btnFl {
+    background-color: #00ae0e;
+}
+
+footer {
+    width: 100%;
+    background: linear-gradient(rgba(140, 140, 140, 0.235), #507c55);
+    height: 4rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: .625rem;
+}
+
+footer p {
+    margin: 1.3rem 1rem 0.25rem 1rem;
+    font-weight: 200;
+    font-size: 1rem;
+    color: white;
+    text-align: center;
 }

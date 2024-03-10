@@ -16,7 +16,7 @@ let prod;
 se guarden sus datos y luego usas esos datos para hacer el login? 
 Lo harías todo en una funciona "login" con un par de líneas. */
 //FUNCION PARA LOGIN
-/* function login(inusuario, inPass) {
+function login(inusuario, inPass) {
     if (usuario === inusuario && pass === inPass) {//verificacion de usuario y pass
         log = true;
         alert("LOGIN CORRECTO. AHORA TIENES ACCESO AL Script");
@@ -28,15 +28,16 @@ Lo harías todo en una funciona "login" con un par de líneas. */
         alert("Se agotaron los intentos. Intente nuevamente más tarde.");
         return;
     }
-} */
+}
 log = true;
 //TRAE LOS VALORES DE LOS INPUT Y EJECUTA LA FUNCION LOGIN
 const inUsuario = document.getElementById('user'),
-    inPass = document.getElementById('pass'),
-    enviar = document.getElementById('enviarLog');
-enviar.addEventListener('click', (event) => {
+    form = document.getElementById('form-login'),
+    inPass = document.getElementById('pass');
+form.addEventListener('submit', (event) => {
     event.preventDefault();
-    //login(inUsuario.value, inPass.value);
+    console.log(event.target);
+    login(inUsuario.value, inPass.value);
 });
 
 //-----------------------------------------------------------------------------------
@@ -173,12 +174,16 @@ const contenedor = document.getElementById('filtrar');
 btnBuscar.addEventListener('click', (e) => {
     e.preventDefault();
     const encontrado = buscarProductos(todosLosProductos, input.value.toLowerCase());
-    console.log(encontrado);
     const liEncontrado = document.createElement('li');
     liEncontrado.innerHTML = bloqueHtml(encontrado);
     contenedor.append(liEncontrado);
     escucharAgregar(encontrado);
+    const limpiar = document.getElementById('limpiar');
+    limpiar.addEventListener('click', () => {
+        liEncontrado.remove()
+    })
 })
+
 
 //-----------------------------------------------------------------------------------
 //comprar productos
@@ -211,10 +216,35 @@ function agregarAlCarrito(Producto, cantidad, precio) {
             contUnidades.innerHTML = nuevasUnidades;
         }
         totalAPagar(carrito);
+        carritoALocal(carrito)
         return carrito
     }
 }
+//funciones para cargar los elementos del carrito al localStorage
+function carritoALocal(carrito) {
+    const prodEnJson = JSON.stringify(carrito);
+    localStorage.setItem('carrito', prodEnJson);
+}
 
+//funciones para cargar los elementos del localStorage al Html
+function cargarCarritoDesdeLocal() {
+    const carritoDesdeLocal = localStorage.getItem('carrito');
+    if (carritoDesdeLocal) {
+        let carritoLocal = JSON.parse(carritoDesdeLocal);
+        carritoLocal.forEach(producto => {
+            const contCarrito = document.getElementById('carrito'),
+                listaCreada = document.createElement('li');
+            listaCreada.classList.add(`${producto.Producto}-li`)
+            listaCreada.innerHTML = crearCarritoHtml(producto)
+            contCarrito.append(listaCreada)
+            totalAPagar(carritoLocal);
+            eliminarProducto(producto);
+        });
+    }
+}
+cargarCarritoDesdeLocal()
+
+//funcion para validar si hay stock sufiente antes de realizar la compra
 function validarStock(producto) {
     if (producto.stock <= 0) {
         alert(`Lo lamento, no tenemos mas unidades de ${producto.nombre} `);
@@ -281,11 +311,13 @@ function eliminarProducto(Producto) {
         let eliminado = obtenerProducto(Producto.Producto);
         eliminado.stock += Producto.Unidades;
         carrito.pop(eliminado);
+        carritoALocal(carrito);
         modificarStockYHtml(eliminado, eliminado.stock, Producto.Producto);
         aPagar -= (Producto.Unidades * Producto.Precio);
         const parrafo = document.getElementById('total');
         parrafo.innerText = `Total a pagar: ${aPagar}`;
     });
 }
+
 
 ///proceso de compra y finalizar para pagar
