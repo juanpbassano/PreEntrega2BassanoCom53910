@@ -1,44 +1,58 @@
 //Delaracion de variables de usuario y contraseña para el login
-let usuario = "JuanPablo";
-let usuarioIngresado = "";
-let pass = "987";
-let intentos = 3;
-let log = false;
-const todosLosProductos = [];
-const carrito = [];
-let aPagar = 0;
-let nombreIn;
-let cantidad;
-let stockrestar = 0;
-let prod;
+let usuarioIngresado = "",
+    nombre = "",
+    apellido = "",
+    email = "",
+    usuario = "",
+    contraseña;
+let intentos = 3,
+    log = false;
+const todosLosProductos = [],
+    carrito = [];
+let aPagar = 0,
+    nombreIn,
+    cantidad,
+    stockrestar = 0,
+    prod;
 
-/* porque no permitís que un usuario se loguee, 
-se guarden sus datos y luego usas esos datos para hacer el login? 
-Lo harías todo en una funciona "login" con un par de líneas. */
-//FUNCION PARA LOGIN
-function login(inusuario, inPass) {
-    if (usuario === inusuario && pass === inPass) {//verificacion de usuario y pass
-        log = true;
-        alert("LOGIN CORRECTO. AHORA TIENES ACCESO AL Script");
-    } else {
-        intentos -= 1;
-        alert("Usuario o Contraseña incorrecta!\nIngrese nuevamente. Le quedan: " + intentos + " intentos.");
-    }
-    if (!log && intentos === 0) {
-        alert("Se agotaron los intentos. Intente nuevamente más tarde.");
-        return;
-    }
-}
-log = true;
+
 //TRAE LOS VALORES DE LOS INPUT Y EJECUTA LA FUNCION LOGIN
 const inUsuario = document.getElementById('user'),
-    form = document.getElementById('form-login'),
+    formu = document.getElementById('form-login'),
     inPass = document.getElementById('pass');
-form.addEventListener('submit', (event) => {
-    event.preventDefault();
-    console.log(event.target);
+formu.addEventListener('submit', (e) => {
+    e.preventDefault();
     login(inUsuario.value, inPass.value);
 });
+//FUNCION PARA LOGIN
+function login(inusuario, inPass) {
+    //Me traigo datos del sessionStorage generado en el html formulario
+    const datosUsuarioJSON = sessionStorage.getItem('nuevoRegistro'),
+        datosUsuario = JSON.parse(datosUsuarioJSON);
+    if (!(datosUsuario.nombre) == null) {
+        nombre = datosUsuario.nombre,
+            apellido = datosUsuario.apellido,
+            email = datosUsuario.email,
+            usuario = datosUsuario.user,
+            contraseña = datosUsuario.contraseña;
+        alert('Debe crear un usuario primero');
+        return;
+    } else {
+        alert('Debe crear un usuario primero');
+        if (usuario === inusuario && contraseña === inPass) {//verificacion de usuario y pass
+            log = true;
+            alert("LOGIN CORRECTO. AHORA TIENES ACCESO AL Script");
+        } else {
+            intentos -= 1;
+            alert("Usuario o Contraseña incorrecta!\nIngrese nuevamente. Le quedan: " + intentos + " intentos.");
+        }
+        if (!log && intentos === 0) {
+            alert("Se agotaron los intentos. Intente nuevamente más tarde.");
+            return;
+        }
+    }
+}
+
 
 //-----------------------------------------------------------------------------------
 //crear productos
@@ -105,10 +119,12 @@ function obtenerProducto(nombre) {
 // Crea una nueva instancia de Productos con los datos proporcionados por el usuario
 //y se agrega al array de todos los productos.
 function agregarProducto(nombreP, precio, stock) {
-    const nuevoProducto = new Producto(nombreP.toLowerCase(), parseInt(precio), parseInt(stock));
-    todosLosProductos.push(nuevoProducto);
-    creaProductoNuAlHTML(nuevoProducto);
-    return nuevoProducto;
+    if (log === true) {
+        const nuevoProducto = new Producto(nombreP.toLowerCase(), parseInt(precio), parseInt(stock));
+        todosLosProductos.push(nuevoProducto);
+        creaProductoNuAlHTML(nuevoProducto);
+        return nuevoProducto;
+    }
 }
 //Funcion que genera los valores del selecteor de stock
 function generarOpciones(stock) {
@@ -163,10 +179,12 @@ function crearProductosAlHTML() {
 }
 //filtrar producto
 function buscarProductos(arr, filtro) {
-    const encontrado = arr.find((el) => {
-        return el.nombre.includes(filtro);
-    });
-    return encontrado;
+    if (log === true) {
+        const encontrado = arr.find((el) => {
+            return el.nombre.includes(filtro);
+        });
+        return encontrado;
+    }
 }
 const input = document.getElementById('ingreso');
 const btnBuscar = document.getElementById('buscar');
@@ -190,13 +208,15 @@ btnBuscar.addEventListener('click', (e) => {
 //-----------------------------------------------------------------------------------
 
 function escucharAgregar(Producto) {
-    const btnComprar = document.getElementById(`btnComprar-${Producto.nombre.toLowerCase()}`),
-        slcStock = document.getElementById(`${Producto.nombre}-cantidad`);
-    btnComprar.addEventListener('click', (e) => {
-        e.preventDefault()
-        cantidad = slcStock.value;
-        agregarAlCarrito(Producto, cantidad, Producto.precio);
-    });
+    if (log === true) {
+        const btnComprar = document.getElementById(`btnComprar-${Producto.nombre.toLowerCase()}`),
+            slcStock = document.getElementById(`${Producto.nombre}-cantidad`);
+        btnComprar.addEventListener('click', (e) => {
+            e.preventDefault()
+            cantidad = slcStock.value;
+            agregarAlCarrito(Producto, cantidad, Producto.precio);
+        });
+    }
 }
 
 //funcion que agrega productos al carrito y resta el stock de todosLosProductos
@@ -205,11 +225,12 @@ function agregarAlCarrito(Producto, cantidad, precio) {
         prod = carrito.find(item => item.Producto.toLowerCase() === Producto.nombre.toLowerCase());
         if (!prod) {
             carrito.push({ Producto: Producto.nombre, Precio: precio, Unidades: parseInt(cantidad) });
+            restarStock(cantidad, Producto);
             imprimeCarrito(carrito);
-            restarStock(todosLosProductos, carrito, cantidad);
+            modificarStockYHtml(Producto, Producto.stock, Producto.nombre);
         } else if (validarStock(Producto)) {
             prod.Unidades += parseInt(cantidad);
-            restarStock(todosLosProductos, carrito, cantidad);
+            restarStock(cantidad, Producto);
             modificarStockYHtml(Producto, Producto.stock, Producto.nombre);
             const contUnidades = document.getElementById(`${prod.Producto}-unidades`);
             let nuevasUnidades = innerHTML = `<p>Unidades seleccionadas: ${prod.Unidades}</p>`;
@@ -228,18 +249,20 @@ function carritoALocal(carrito) {
 
 //funciones para cargar los elementos del localStorage al Html
 function cargarCarritoDesdeLocal() {
-    const carritoDesdeLocal = localStorage.getItem('carrito');
-    if (carritoDesdeLocal) {
-        let carritoLocal = JSON.parse(carritoDesdeLocal);
-        carritoLocal.forEach(producto => {
-            const contCarrito = document.getElementById('carrito'),
-                listaCreada = document.createElement('li');
-            listaCreada.classList.add(`${producto.Producto}-li`)
-            listaCreada.innerHTML = crearCarritoHtml(producto)
-            contCarrito.append(listaCreada)
-            totalAPagar(carritoLocal);
-            eliminarProducto(producto);
-        });
+    if (log === true) {
+        const carritoDesdeLocal = localStorage.getItem('carrito');
+        if (carritoDesdeLocal) {
+            let carritoLocal = JSON.parse(carritoDesdeLocal);
+            carritoLocal.forEach(producto => {
+                const contCarrito = document.getElementById('carrito'),
+                    listaCreada = document.createElement('li');
+                listaCreada.classList.add(`${producto.Producto}-li`)
+                listaCreada.innerHTML = crearCarritoHtml(producto)
+                contCarrito.append(listaCreada)
+                totalAPagar(carritoLocal);
+                eliminarProducto(producto);
+            });
+        }
     }
 }
 cargarCarritoDesdeLocal()
@@ -255,21 +278,13 @@ function validarStock(producto) {
 }
 
 
-function restarStock(todosLosProductos, carrito, cantidad) {
-    carrito.forEach(producto => {
-        const nombreProducto = producto.Producto;
-        todosLosProductos.forEach(producto => {
-            if (producto.nombre == nombreProducto) {
-                if (producto.stock >= parseInt(cantidad)) {
-                    producto.stock -= parseInt(cantidad);
-                    const canti = document.getElementById(`${producto.nombre}-cantidad`),
-                        stockDispo = document.getElementById(`${producto.nombre}-stockDispo`);
-                    stockDispo.innerText = `Stock disponible: ${producto.stock}`;
-                    canti.innerHTML = generarOpciones(producto.stock);
-                }
-            }
-        })
-    })
+function restarStock(cantidad, Producto) {
+    let productoEncontrado = obtenerProducto(Producto.nombre);
+    if (productoEncontrado) {
+        if (productoEncontrado.stock >= parseInt(cantidad)) {
+            productoEncontrado.stock -= parseInt(cantidad);
+        }
+    }
 }
 
 function imprimeCarrito() {
@@ -304,20 +319,43 @@ function crearCarritoHtml(Producto) {
 
 //funcion que borra elementos del carrito y del html
 function eliminarProducto(Producto) {
-    const btnBorrar = document.getElementById(`btnBorrar-${Producto.Producto.toLowerCase()}`);
-    btnBorrar.addEventListener('click', () => {
-        const cardCarrito = document.querySelector(`.${Producto.Producto}-li`);
-        cardCarrito.remove();
-        let eliminado = obtenerProducto(Producto.Producto);
-        eliminado.stock += Producto.Unidades;
-        carrito.pop(eliminado);
-        carritoALocal(carrito);
-        modificarStockYHtml(eliminado, eliminado.stock, Producto.Producto);
-        aPagar -= (Producto.Unidades * Producto.Precio);
-        const parrafo = document.getElementById('total');
-        parrafo.innerText = `Total a pagar: ${aPagar}`;
-    });
+    if (log === true) {
+        const btnBorrar = document.getElementById(`btnBorrar-${Producto.Producto.toLowerCase()}`);
+        btnBorrar.addEventListener('click', () => {
+            const cardCarrito = document.querySelector(`.${Producto.Producto}-li`);
+            cardCarrito.remove();
+            let eliminado = obtenerProducto(Producto.Producto);
+            eliminado.stock += Producto.Unidades;
+            carrito.pop(eliminado);
+            carritoALocal(carrito);
+            modificarStockYHtml(eliminado, eliminado.stock, Producto.Producto);
+            aPagar -= (Producto.Unidades * Producto.Precio);
+            const parrafo = document.getElementById('total');
+            parrafo.innerText = `Total a pagar: ${aPagar}`;
+        });
+    }
+}
+//funcion que elimina producto por producto agregado al carrito, devuelve el stock a todos los productos y modifica el html
+function limpiarCarrito(carrito) {
+    if (log === true) {
+        const btnlimpiar = document.getElementById('btnlim');
+        btnlimpiar.addEventListener('click', () => {
+            carrito.forEach((producto) => {
+                const cardCarrito = document.querySelector(`.${producto.Producto}-li`);
+                cardCarrito.remove();
+                const productoEncontrado = obtenerProducto(producto.Producto);
+                productoEncontrado.stock += producto.Unidades;
+                modificarStockYHtml(productoEncontrado, productoEncontrado.stock, producto.Producto);
+            });
+            aPagar = 0;
+            const parrafo = document.getElementById("total");
+            parrafo.innerText = `Total a pagar: ${aPagar}`;
+            localStorage.removeItem("carrito");
+            carrito.length = 0;
+        });
+    }
 }
 
-
+limpiarCarrito(carrito);
 ///proceso de compra y finalizar para pagar
+

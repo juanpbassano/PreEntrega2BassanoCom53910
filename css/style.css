@@ -218,7 +218,7 @@ label {
 }
 
 
-.btnFl {
+.btnFl,.btnlim {
     font-size: 1rem;
     width: 10rem;
     margin: .4rem;
