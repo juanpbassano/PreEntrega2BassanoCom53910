@@ -1,5 +1,7 @@
+/* Import the DM Sans font from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;700&display=swap');
 
+/* Reset some default styles for all elements */
 * {
     margin: 0;
     padding: 0;
@@ -8,10 +10,9 @@
     font-weight: 400;
 }
 
-
+/* Style the header element */
 header {
     width: 100%;
-
     padding: 1rem;
     background-color:rgba(140, 140, 140, 0.235);
     display: grid;
@@ -21,23 +22,11 @@ header {
         "tit form";
 }
 
-.inUsuario {
-    grid-area: usuario;
-}
-
-.inPass {
-    grid-area: contraseña;
-}
-
-.check {
-    grid-area: check;
-}
-
+/* Style the elements in the form section of the header */
+.inUsuario,
+.inPass,
+.check,
 .btn-login {
-    grid-area: submit;
-}
-
-.form {
     grid-area: form;
     display: grid;
     grid-template-rows: 1fr 1fr;
@@ -48,6 +37,7 @@ header {
         "check submit";
 }
 
+/* Style the #register element */
 #register {
     display: flex;
     flex-direction: column;
@@ -55,6 +45,7 @@ header {
     background-color: rgba(140, 140, 140, 0.235);
 }
 
+/* Style the input fields */
 .inputR {
     padding: 10px 10px;
     width: 15rem;
@@ -63,22 +54,10 @@ header {
     border: 1px solid #ccc;
 }
 
-.lgbtn[type="submit"] {
-    width: 15rem;
-    background-color: rgb(34, 139, 34);
-    padding: 8px 13px;
-    margin: 10px 0px;
-    color: white;
-    border-radius: 3px;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-}
-
+/* Style the login and reset buttons */
+.lgbtn[type="submit"],
 .lgbtn[type="reset"] {
     width: 15rem;
-    float: right;
-    background-color: #FFA420;
     padding: 8px 13px;
     margin: 10px 0px;
     color: white;
@@ -88,10 +67,12 @@ header {
     cursor: pointer;
 }
 
+/* Style the reset button hover effect */
 button[type="reset"]:hover {
     background-color: #ff1814;
 }
 
+/* Style the h1 element */
 h1 {
     grid-area: tit;
     margin: 1rem;
@@ -99,12 +80,14 @@ h1 {
     color: rgb(13, 44, 22);
 }
 
+/* Style the checkbox element */
 .check {
     grid-area: check;
     align-items: end;
     margin-right: .3rem;
 }
 
+/* Style the div element */
 div {
     flex-direction: column;
     justify-content: center;
@@ -112,6 +95,7 @@ div {
     display: flex;
 }
 
+/* Style the .contIng element */
 .contIng {
     border: 1px solid black;
     border-radius: 5%;
@@ -120,6 +104,7 @@ div {
     background-color: rgba(140, 140, 140, 0.235);
 }
 
+/* Style the .boton element */
 .boton {
     padding: 8px;
     margin: .6rem;
@@ -134,10 +119,12 @@ div {
     transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 }
 
+/* Style the .boton hover effect */
 .boton:hover {
     background-color: #84ff0068;
 }
 
+/* Style the .contFiltrado element */
 .contFiltrado {
     display: flex;
     flex-direction: column;
@@ -150,6 +137,7 @@ div {
     background-color: rgba(140, 140, 140, 0.235);
 }
 
+/* Style the .card element */
 .card {
     background-color: #eaff6a;
     width: 12.5rem;
@@ -157,12 +145,14 @@ div {
     box-shadow: 0.3125rem 0.5rem 0.625rem 0.0625rem rgba(183, 15, 255, 0.552);
 }
 
+/* Style the input and select elements */
 input,
 select {
     border-radius: 5px;
     font-size: 1rem;
 }
 
+/* Style the select element */
 select {
     background-color: transparent;
     font-size: 10px;
@@ -170,81 +160,13 @@ select {
     width: 70px;
 }
 
+/* Style the li element */
 li {
     list-style-type: none;
     margin: 1rem;
 }
 
+/* Style the .btnComprar and .btnFiltrado buttons */
 .btnComprar,
 .btnFiltrado {
-    box-shadow: 3px 4px 2px -2px rgba(0, 0, 0, 0.44);
-    margin: 3px;
-    border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0.753);
-    color: white;
-}
-
-h2 {
-    font-size: 2rem;
-    margin-top: 1rem;
-}
-
-.pD {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin: 1rem;
-}
-
-.carrito,
-.fCompra {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    margin: 1rem;
-}
-
-label {
-    font-size: .8rem;
-}
-
-.cardCarrito {
-    margin: 1rem;
-    border: solid .0625rem black;
-    background-color: #3ceb4a;
-    width: 13.5rem;
-    border-radius: 1.25rem;
-    box-shadow: 0.3125rem 0.5rem 0.625rem 0.0625rem rgba(0, 0, 0, 0.552);
-}
-
-
-.btnFl,.btnlim {
-    font-size: 1rem;
-    width: 10rem;
-    margin: .4rem;
-    background-color: #8d8c8c76;
-    border-radius: .425rem;
-    box-shadow: 0.3125rem 0.5rem 0.625rem 0.0625rem rgba(0, 0, 0, 0.552);
-}
-
-.btnFl {
-    background-color: #00ae0e;
-}
-
-footer {
-    width: 100%;
-    background: linear-gradient(rgba(140, 140, 140, 0.235), #507c55);
-    height: 4rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: .625rem;
-}
-
-footer p {
-    margin: 1.3rem 1rem 0.25rem 1rem;
-    font-weight: 200;
-    font-size: 1rem;
-    color: white;
-    text-align: center;
-}
+    box-shadow: 3px 4px 2px -2px
